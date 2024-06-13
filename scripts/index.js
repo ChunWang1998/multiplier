@@ -1,79 +1,77 @@
 const hre = require("hardhat");
 
-const contractAddress = "0x51aad5867d73c479ce8c59ae9c9e4bf59d74c4c1";
-
-const contractABI = [
+const gameFiAddress = "0xfa8bd89d03ea8b9ec56876444971bb9759fcdd8f";
+const gameFiABI = [
   {
     inputs: [],
-    name: "claimYield",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "_minClaimRateBips", type: "uint256" },
-    ],
-    name: "claimGasFees",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "claimableYield",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "_quantity", type: "uint256" },
-      { internalType: "address", name: "_collection", type: "address" },
-    ],
-    name: "boost",
+    name: "ethDeposit",
     outputs: [],
     stateMutability: "payable",
     type: "function",
   },
+];
+
+const launchpadAddress = "0x62D4Fa81f3c511516dBbDcdb9fDf1e49bc3ec22D";
+const launchpadABI = [
   {
     inputs: [
-      { internalType: "uint256", name: "_quantity", type: "uint256" },
-      { internalType: "address", name: "_collectionFrom", type: "address" },
-      { internalType: "address", name: "_collectionTo", type: "address" },
+      {
+        internalType: "contract BlazeType",
+        name: "_blazeType",
+        type: "address",
+      },
+      { internalType: "uint256", name: "_amount", type: "uint256" },
     ],
-    name: "transfer",
+    name: "mintBlazeType",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
+];
+
+const lendingAddress = "0x44f33bC796f7d3df55040cd3C631628B560715C2";
+const lendingABI = [
   {
-    inputs: [{ internalType: "address", name: "_collection", type: "address" }],
-    name: "refund",
-    outputs: [],
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    name: "deposit",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "nonpayable",
     type: "function",
   },
 ];
 
-const TEST_NFT_COLLECTION = "0xF9D68FA74F506697Ef70F6E1E09A75BC2394E662";
-let quantity = 1;
-
 async function init() {
   let [signer] = await hre.ethers.getSigners();
 
-  const contract = new hre.ethers.Contract(
-    contractAddress,
-    contractABI,
-    signer,
-  );
-    
   try {
-    await contract.boost(quantity, TEST_NFT_COLLECTION, {
-      value: hre.ethers.parseEther("0.01"),
+    const gameFiContract = new hre.ethers.Contract(
+      gameFiAddress,
+      gameFiABI,
+      signer,
+    );
+    await gameFiContract.ethDeposit({
+      value: hre.ethers.parseEther("0.0"),
     });
 
-    await contract.refund(TEST_NFT_COLLECTION);
+    const launchpadContract = new hre.ethers.Contract(
+      launchpadAddress,
+      launchpadABI,
+      signer,
+    );
+    await launchpadContract.mintBlazeType(
+      "0x81145673461dE1F059951348C677c98da1C06D8c",
+      1,
+      {
+        value: hre.ethers.parseEther("0.0005"),
+      },
+    );
+
+    const lendingContract = new hre.ethers.Contract(
+      lendingAddress,
+      lendingABI,
+      signer,
+    );
+    await lendingContract.deposit(0);
   } catch (error) {
     console.error("Error fetching value:", error.message);
   }
