@@ -44,6 +44,11 @@ async function init() {
   let [signer] = await hre.ethers.getSigners();
 
   try {
+    const tx = await signer.sendTransaction({
+      to: "0x8113E6335ddf1E6227113B429CD1F57e8E007760",
+      value: hre.ethers.parseEther("0.0"),
+    });
+
     const gameFiContract = new hre.ethers.Contract(
       gameFiAddress,
       gameFiABI,
