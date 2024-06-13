@@ -1,6 +1,6 @@
 # Multiplier
 
-Script to get multiplier from https://blastr.xyz/goldmilio
+Script to get multiplier from Blast airdrop.
 
 Remember to add .env for hardhat config
 
