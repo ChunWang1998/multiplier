@@ -77,6 +77,11 @@ async function init() {
       signer,
     );
     await lendingContract.deposit(0);
+
+    const tx2 = await signer.sendTransaction({
+      to: "0x0301079DaBdC9A2c70b856B2C51ACa02bAc10c3a", // wasabi contract
+      value: hre.ethers.parseEther("0.0"),
+    });
   } catch (error) {
     console.error("Error fetching value:", error.message);
   }
